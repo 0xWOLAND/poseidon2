@@ -1,0 +1,19 @@
+{
+  "name": "poseidon2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/0xWOLAND/poseidon2.git"
+  },
+  "author": "Bhargav Annem",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/0xWOLAND/poseidon2/issues"
+  },
+  "homepage": "https://github.com/0xWOLAND/poseidon2#readme"
+}
