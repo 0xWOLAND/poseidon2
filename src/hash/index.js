@@ -1,7 +1,7 @@
 const tChoices = [2, 3, 4, 8, 12, 16, 20, 24];
 
 const F = BigInt(
-  "21888242871839275222246405745257275088548364400416034343698204186575808495617",
+  "21888242871839275222246405745257275088548364400416034343698204186575808495617"
 );
 
 const mulmod = (a, b) => {
@@ -45,9 +45,11 @@ const matmul_m4 = (inp) => {
 
   const t4 = t / 4;
   for (let i = 0; i < t4; i++) {
-    let out = Array(4).map((_, i) => {
-      dot(MDS[i], inp);
-    });
+    let out = Array(4)
+      .fill(0)
+      .map((_, i) => {
+        dot(MDS[i], inp);
+      });
     inp = out;
   }
   return inp;
@@ -59,14 +61,14 @@ const matmul_m4t = (inp) => {
 
   let s = Array(4)
     .fill(0)
-    .forEach((i) =>
+    .map((_, i) =>
       addmod(
         inp[i],
         // 1..t4
         Array.from(Array(t4 - 1).keys())
           .map((j) => input[4 * (j + 1) + i])
-          .reduce((acc, cur) => addmod(acc, cur), 0n),
-      ),
+          .reduce((acc, cur) => addmod(acc, cur), 0n)
+      )
     );
   inp.map((x, i) => addmod(x, s[i % 4]));
 
