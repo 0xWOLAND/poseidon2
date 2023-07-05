@@ -17,6 +17,11 @@ const dot = (a, b) =>
     .map((x, i) => mulmod(a[i], b[i]))
     .reduce((acc, cur) => addmod(acc, cur), 0n);
 
+const sbox = (x) => {
+  const a = x * x;
+  return (x * a * a) % F;
+};
+
 const MDS = [
   [5, 7, 1, 3],
   [4, 6, 1, 1],
@@ -57,7 +62,8 @@ const matmul_m4t = (inp) => {
     .forEach((i) =>
       addmod(
         inp[i],
-        Array.from(Array(t4).keys())
+        // 1..t4
+        Array.from(Array(t4 - 1).keys())
           .map((j) => input[4 * (j + 1) + i])
           .reduce((acc, cur) => addmod(acc, cur), 0n)
       )
@@ -108,11 +114,6 @@ const matmul_internal = (inp, diag) => {
     default:
       throw new Error(`Invalid Dimension t: ${t}`);
   }
-};
-
-const sbox = (x) => {
-  const a = x * x;
-  return (x * a * a) % F;
 };
 
 const poseidon2 = (_inp, opt) => {
