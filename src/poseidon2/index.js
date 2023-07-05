@@ -78,14 +78,14 @@ const matmul_external = (inp) => {
   const t = inp.length;
 
   switch (t) {
-    case 2 | 3:
+    case 2 || 3:
       sum = inp.reduce((acc, cur) => addmod(acc, cur));
       inp.map((x) => addmod(x, sum));
       break;
     case 4:
       inp = matmul_m4(inp);
       break;
-    case 8 | 12 | 16 | 20 | 24:
+    case 8 || 12 || 16 || 20 || 24:
       inp = matmul_m4t(matmul_m4(inp));
       break;
     default:
@@ -98,16 +98,16 @@ const matmul_internal = (inp, diag) => {
   const t = inp.length;
 
   switch (t) {
-    case 2 | 3:
+    case 2 || 3:
       const mat = t == 2 ? INTERNAL2X2MATRIX : INTERNAL3X3MATRIX;
       for (let i = 0; i < t; i++) {
-        let out = Array(t).map((_, i) => {
-          dot(mat, inp);
-        });
+        let out = Array(t)
+          .fill(0)
+          .map((_, i) => dot(mat[i], inp));
         inp = out;
       }
       return inp;
-    case 4 | 8 | 12 | 16 | 20 | 24:
+    case 4 || 8 || 12 | 16 | 20 | 24:
       let sum = inp.reduce((acc, cur) => addmod(acc, cur), 0n);
       inp.map((x, i) => mulmod(diag[i], x) - x + sum);
       return inp;
@@ -139,10 +139,11 @@ const poseidon2 = (_inp, opt) => {
 
   for (let r = 0; r < nRoundsF + nRoundsP; r++) {
     if (r < nRoundsF / 2 || r >= nRoundsF / 2 + nRoundsP) {
-      current_state.map((x, i) => addmod(x, C[r * t + i]));
-      current_state.map((x) => sbox(x));
+      current_state = current_state.map((x, i) => addmod(x, C[r * t + i]));
+      current_state = current_state.map((x) => sbox(x));
       current_state = matmul_external(current_state);
     } else {
+      // console.log(r * t, C[r * t]);
       current_state[0] = addmod(current_state[0], C[r * t]);
       current_state[0] = sbox(current_state[0]);
 
@@ -150,6 +151,8 @@ const poseidon2 = (_inp, opt) => {
       current_state = matmul_internal(current_state, diag);
     }
   }
+
+  return current_state;
 };
 
 module.exports = poseidon2;
