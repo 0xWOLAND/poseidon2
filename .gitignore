@@ -1,3 +1,2 @@
-*.out
-*.py
-*.sage
+node_modules
+build

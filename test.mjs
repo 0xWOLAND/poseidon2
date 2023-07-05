@@ -1,5 +1,4 @@
-import { hash2 } from "./src/poseidon2.mjs";
-import { hash3 } from "./src/poseidon3.mjs";
+import { poseidon2, poseidon3 } from "./build/index.js";
 
-console.log(hash2(["0x01", "0x02"]));
-console.log(hash3(["0x01", "0x02", "0x03"]));
+console.log(poseidon2(["0x01", "0x02"]));
+console.log(poseidon3(["0x01", "0x02", "0x03"]));

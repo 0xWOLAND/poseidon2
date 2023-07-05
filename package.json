@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test.mjs",
+    "build": "babel ./src -d build"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,10 @@
   "bugs": {
     "url": "https://github.com/0xWOLAND/poseidon2/issues"
   },
-  "homepage": "https://github.com/0xWOLAND/poseidon2#readme"
+  "homepage": "https://github.com/0xWOLAND/poseidon2#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.22.6",
+    "@babel/core": "^7.22.6",
+    "@babel/preset-env": "^7.22.6"
+  }
 }

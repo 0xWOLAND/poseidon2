@@ -1,4 +1,4 @@
-import poseidon2 from "./poseidon2";
+import poseidon2 from "./hash";
 import c from "./constants/20";
 
 export const hash20 = (inp) => {

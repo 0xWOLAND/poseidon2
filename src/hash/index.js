@@ -110,7 +110,7 @@ const matmul_internal = (inp, diag) => {
   }
 };
 
-const poseidon2 = (_inp, opt) => {
+function poseidon2(_inp, opt) {
   const inp = _inp.map((x) => BigInt(x));
 
   const t = inp.length;
@@ -147,6 +147,6 @@ const poseidon2 = (_inp, opt) => {
   }
 
   return current_state;
-};
+}
 
 module.exports = poseidon2;
