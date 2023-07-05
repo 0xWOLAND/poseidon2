@@ -77,42 +77,36 @@ const matmul_external = (inp) => {
   let sum = 0;
   const t = inp.length;
 
-  switch (t) {
-    case 2 || 3:
-      sum = inp.reduce((acc, cur) => addmod(acc, cur));
-      inp.map((x) => addmod(x, sum));
-      break;
-    case 4:
-      inp = matmul_m4(inp);
-      break;
-    case 8 || 12 || 16 || 20 || 24:
-      inp = matmul_m4t(matmul_m4(inp));
-      break;
-    default:
-      throw new Error(`Invalid dimension t: ${t}`);
+  if ([2, 3].includes(t)) {
+    sum = inp.reduce((acc, cur) => addmod(acc, cur));
+    return inp.map((x) => addmod(x, sum));
+  } else if (t == 4) {
+    return matmul_m4(inp);
+  } else if ([8, 12, 16, 20, 24].includes(t)) {
+    return matmul_m4t(matmul_m4(inp));
+  } else {
+    throw new Error(`Invalid dimension t: ${t}`);
   }
-  return inp;
 };
 
 const matmul_internal = (inp, diag) => {
   const t = inp.length;
 
-  switch (t) {
-    case 2 || 3:
-      const mat = t == 2 ? INTERNAL2X2MATRIX : INTERNAL3X3MATRIX;
-      for (let i = 0; i < t; i++) {
-        let out = Array(t)
-          .fill(0)
-          .map((_, i) => dot(mat[i], inp));
-        inp = out;
-      }
-      return inp;
-    case 4 || 8 || 12 | 16 | 20 | 24:
-      let sum = inp.reduce((acc, cur) => addmod(acc, cur), 0n);
-      inp.map((x, i) => mulmod(diag[i], x) - x + sum);
-      return inp;
-    default:
-      throw new Error(`Invalid Dimension t: ${t}`);
+  if ([2, 3].includes(t)) {
+    const mat = t == 2 ? INTERNAL2X2MATRIX : INTERNAL3X3MATRIX;
+    for (let i = 0; i < t; i++) {
+      let out = Array(t)
+        .fill(0)
+        .map((_, i) => dot(mat[i], inp));
+      inp = out;
+    }
+    return inp;
+  } else if ([4, 8, 12, 16, 20, 24].includes(t)) {
+    let sum = inp.reduce((acc, cur) => addmod(acc, cur), 0n);
+    inp.map((x, i) => mulmod(diag[i], x) - x + sum);
+    return inp;
+  } else {
+    throw new Error(`Invalid Dimension t: ${t}`);
   }
 };
 
