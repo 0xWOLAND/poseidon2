@@ -1,7 +1,7 @@
 const tChoices = [2, 3, 4, 8, 12, 16, 20, 24];
 
 const F = BigInt(
-  "21888242871839275222246405745257275088548364400416034343698204186575808495617"
+  "21888242871839275222246405745257275088548364400416034343698204186575808495617",
 );
 
 const mulmod = (a, b) => {
@@ -67,8 +67,8 @@ const matmul_m4t = (inp) => {
         // 1..t4
         Array.from(Array(t4 - 1).keys())
           .map((j) => input[4 * (j + 1) + i])
-          .reduce((acc, cur) => addmod(acc, cur), 0n)
-      )
+          .reduce((acc, cur) => addmod(acc, cur), 0n),
+      ),
     );
   inp.map((x, i) => addmod(x, s[i % 4]));
 
@@ -79,22 +79,20 @@ const matmul_external = (inp) => {
   let sum = 0;
   const t = inp.length;
 
-  if ([2, 3].includes(t)) {
+  if (t < 4) {
     sum = inp.reduce((acc, cur) => addmod(acc, cur));
     return inp.map((x) => addmod(x, sum));
-  } else if (t == 4) {
-    return matmul_m4(inp);
-  } else if ([8, 12, 16, 20, 24].includes(t)) {
-    return matmul_m4t(matmul_m4(inp));
   } else {
-    throw new Error(`Invalid dimension t: ${t}`);
+    out = matmul_m4(inp);
+    if (t > 4) out = matmul_m4t(out);
+    return out;
   }
 };
 
 const matmul_internal = (inp, diag) => {
   const t = inp.length;
 
-  if ([2, 3].includes(t)) {
+  if (t < 4) {
     const mat = t == 2 ? INTERNAL2X2MATRIX : INTERNAL3X3MATRIX;
     for (let i = 0; i < t; i++) {
       let out = Array(t)
@@ -103,7 +101,7 @@ const matmul_internal = (inp, diag) => {
       inp = out;
     }
     return inp;
-  } else if ([4, 8, 12, 16, 20, 24].includes(t)) {
+  } else if (t % 4 == 0) {
     let sum = inp.reduce((acc, cur) => addmod(acc, cur), 0n);
     inp.map((x, i) => mulmod(diag[i], x) - x + sum);
     return inp;
@@ -139,7 +137,6 @@ function poseidon2(_inp, opt) {
       current_state = current_state.map((x) => sbox(x));
       current_state = matmul_external(current_state);
     } else {
-      // console.log(r * t, C[r * t]);
       current_state[0] = addmod(current_state[0], C[r * t]);
       current_state[0] = sbox(current_state[0]);
 
